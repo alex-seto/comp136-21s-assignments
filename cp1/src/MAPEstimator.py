@@ -13,8 +13,9 @@ Resources
 See COMP 136 course website for the complete problem description and all math details
 '''
 
-import numpy as np
+
 from Vocabulary import Vocabulary
+import numpy as np
 
 
 class MAPEstimator():
@@ -69,8 +70,10 @@ class MAPEstimator():
         '''
         self.count_V = np.zeros(self.vocab.size)
         self.total_count = 0
-        # TODO update total_count
-        # TODO update the count_V array
+        for word in word_list:
+            self.total_count += 1
+            self.count_V[self.vocab.get_word_id(word)] += 1
+
 
     def predict_proba(self, word):
         ''' Predict probability of a given unigram under this model
@@ -91,12 +94,14 @@ class MAPEstimator():
         ValueError if hyperparameters do not allow MAP estimation
         KeyError if the provided word is not in the vocabulary
         '''
-        # TODO adjust if condition to avoid cases where valid MAP does not exist
-        if False:
+        all_vocab_seen = len([i for i in self.count_V if i > 0]) == self.vocab.size
+        map_exists = all_vocab_seen or self.alpha > 1
+        if not map_exists:
             raise ValueError(
                 "Hyperparameter alpha does not yield valid MAP estimate")
-        # TODO calculate MAP estimate of the provided word
-        return 1.0 / self.vocab.size  # TODO change this placeholder!
+            
+        word_id = self.vocab.get_word_id(word)
+        return (self.count_V[word_id] + self.alpha - 1)/(self.total_count + self.vocab.size*(self.alpha - 1))
 
     def score(self, word_list):
         ''' Compute the average log probability of words in provided list

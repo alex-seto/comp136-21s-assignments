@@ -17,6 +17,7 @@ import numpy as np
 from Vocabulary import Vocabulary
 
 
+
 class MLEstimator():
     """
     Maximum Likelihood Estimator for unigram probabilities
@@ -74,11 +75,17 @@ class MLEstimator():
         * The 1D array count_V is set to the count of each vocabulary word
         * The integer total_count is set to the total length of the word list
         '''
+        
         self.count_V = np.zeros(self.vocab.size)
         self.total_count = 0
-        self.unseen_count = 0
-        # TODO update total_count and unseen_count
-        # TODO update the count_V array
+        self.unseen_count = self.vocab.size
+        
+        for word in word_list:
+            word_id = self.vocab.get_word_id(word)
+            if self.count_V[word_id] == 0:
+                self.unseen_count -= 1
+            self.count_V[word_id] += 1
+            self.total_count += 1
 
     def predict_proba(self, word):
         ''' Predict probability of a given unigram under this model
@@ -98,8 +105,10 @@ class MLEstimator():
         ------
         KeyError if the provided word is not in the vocabulary
         '''
-        # TODO calculate ML estimate of the provided word
-        return 1.0 / self.vocab.size  # TODO change this placeholder!
+        word_id = self.vocab.get_word_id(word)
+        if self.count_V[word_id] == 0:
+            return self.unseen_proba / self.unseen_count
+        return (self.count_V[word_id] / self.total_count) * (1 - self.unseen_proba)
 
     def score(self, word_list):
         ''' Compute the average log probability of words in provided list

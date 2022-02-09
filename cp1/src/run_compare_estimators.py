@@ -34,8 +34,12 @@ if __name__ == '__main__':
     mle_scores = -9.8 + np.zeros_like(frac_train_list)
     map_scores = -9.9 + np.zeros_like(frac_train_list)
     ppe_scores = -10 + np.zeros_like(frac_train_list)
-
-    # TODO fit ML Estimator on train, then score it on the test set
+    
+    for i in range(len(n_train_list)):
+        mle_ = MLEstimator(Vocabulary(train_word_list), 0.000001)
+        map_ = MLEstimator(Vocabulary(train_word_list), 2.0)
+        ppe_ 
+        mle.
     # TODO fit MAP Estimator on train, then score it on the test set
     # TODO fit PosteriorPredictive Estimator on train, then score it on the test set
 
